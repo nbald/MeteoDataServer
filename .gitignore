@@ -1,0 +1,7 @@
+*.o
+*~
+data/*
+netcdf/*
+build/*
+src/test
+src/a.out
