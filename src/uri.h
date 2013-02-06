@@ -11,24 +11,22 @@ class Uri
 {
   
   typedef std::string UriString;
-  typedef std::string UriValue;
-  typedef std::string UriKey;
+  typedef std::string Value;
+  typedef std::string Key;
   
-  typedef std::string UriEmptyException;
-  typedef std::string UriKeyNotFoundException;
+  typedef std::string EmptyException;
+  typedef std::string KeyNotFoundException;
   
 public:
-    Uri();
     void parse(UriString);
-    UriString getUriString();
     void urlDecode(std::string&);
     void split(std::vector<std::string>&, std::string, char);
-    UriValue getVar(UriKey);
-    bool isVar(UriKey);
+    Value getVar(Key);
+    bool isVar(Key);
 protected:
 private:
     UriString uriString_;
-    std::map<UriKey,UriValue> vars_;
+    std::map<Key,Value> vars_;
 };
 
 #endif

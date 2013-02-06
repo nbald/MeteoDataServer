@@ -28,7 +28,7 @@ int main (void) {
     
     
   } 
-  catch (std::string e)
+  catch (std::string const &e)
   {
     std::cerr << e << std::endl;
   }

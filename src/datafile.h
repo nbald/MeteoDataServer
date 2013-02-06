@@ -6,15 +6,15 @@
 class DataFile
 {
 
-  typedef int NetCdfHandle;
-  typedef std::string DataFileName;
+  typedef int Handle;
+  typedef std::string FileName;
   
 public:
-  DataFile(const DataFileName &);
+  DataFile(const FileName &);
   ~DataFile();
 protected:
 private:
-  NetCdfHandle netCdfHandle_;
+  Handle handle_;
 };
 
 #endif

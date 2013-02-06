@@ -7,19 +7,19 @@
 
 class WrfProjection {
   
-  typedef std::string ProjectionString;
+  typedef std::string ProjString;
   
-  enum WrfProjectionType {
-    WRF_LAMBERT_CONFORMAL = 1,
-    WRF_POLAR_STEREOGRAPHIC = 2,
-    WRF_MERCATOR = 3,
-    WRF_ROTATED_LATLON = 6
+  enum Type {
+    LAMBERT_CONFORMAL = 1,
+    POLAR_STEREOGRAPHIC = 2,
+    MERCATOR = 3,
+    ROTATED_LATLON = 6
   };
   
 public:
 protected:
 private:
-  ProjectionString projectionString_;
+  ProjString projString_;
 };
 
 #endif

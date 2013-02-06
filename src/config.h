@@ -10,25 +10,25 @@
 class Config
 {
 
-  typedef std::string ConfigFileName;
-  typedef Json::Value ConfigObject;
-  typedef std::string ConfigKeyName;
+  typedef std::string FileName;
+  typedef Json::Value Object;
+  typedef std::string KeyName;
   
-  typedef std::string ConfigFileException;
-  typedef std::string ConfigKeyNotFoundException;
-  typedef std::string ConfigBadTypeException;
+  typedef std::string FileException;
+  typedef std::string KeyNotFoundException;
+  typedef std::string BadTypeException;
 
 public:
-  Config(const ConfigFileName &);
-  std::string getString(const ConfigKeyName &);
-  int getInt(const ConfigKeyName &);
+  Config(const FileName &);
+  std::string getString(const KeyName &);
+  int getInt(const KeyName &);
   void reload();
 
 protected:
 
 private:
-  ConfigObject configObject_;
-  ConfigFileName configFileName_;
+  Object object_;
+  FileName fileName_;
   Json::Reader reader_;
 };
 
