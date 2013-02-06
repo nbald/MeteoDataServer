@@ -1,0 +1,10 @@
+// Configuration file for MeteoDataServer
+{
+
+  // How many threads the server should use
+  "nThreads": 2,
+  
+  // Where are data files ?
+  "dataDirectory": "/home/nicolas/MeteoDataServer/data/"
+  
+}
