@@ -34,10 +34,10 @@ int main (void) {
   }
   
   
-  /*
+  
   int status = NC_NOERR;
   int ncid;
-  */
+  
    /* 
    * NC_SHARE : from doc : Since the buffering scheme is optimized for sequential access,
    * programs that do not access data sequentially may see some performance
@@ -49,17 +49,26 @@ int main (void) {
    * NC_MMAP : for mapping the file to virtual memory, and let the linux kernel
    * do the RAM cache management for us. See `man mmap`
    */
-  /*status = nc_open("/home/nicolas/MeteoDataServer/data/2012-12-16_00/rasp/0.nc", NC_SHARE|NC_DISKLESS|NC_MMAP, &ncid);
+   status = nc_open("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/geo_em.d03.nc", NC_SHARE|NC_DISKLESS|NC_MMAP, &ncid);
+  //status = nc_open("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc", NC_SHARE|NC_DISKLESS|NC_MMAP, &ncid);
 
   if (status != NC_NOERR) {
     std::cerr << "erreur nc open" << std::endl;
   }
   
-  std::cout << "cool" << std::endl;
-  */
-  //sleep(100000);
+  std::cout << "nc open" << std::endl;
   
+  sleep(60);
   
+  status = nc_close(ncid);
+
+  if (status != NC_NOERR) {
+    std::cerr << "erreur nc open" << std::endl;
+  }
+  
+  std::cout << "nc closed" << std::endl;
+  
+  sleep(100);
   
   return 0;
 }

@@ -1,0 +1,4 @@
+you can download sample data at :
+http://data.rasp-france.org/
+
+raw WRF model outputs are "wrfout" files.
