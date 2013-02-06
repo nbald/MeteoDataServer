@@ -23,10 +23,14 @@ rm netcdf-${NETCDF_VERSION}.tar.gz
 
 echo "- compiling NetCDF with mmap suport"
 cd netcdf-${NETCDF_VERSION}
-(./configure --enable-mmap --disable-netcdf-4 --disable-dap --disable-examples --prefix=$(pwd)/.. && make && make check && make install && echo "====== SUCCESS NETCDF INSTALL=====") || echo "==== FAILED NECTDF INSTALL ===="
+( \
+  ./configure --enable-mmap --disable-netcdf-4 --disable-dap --disable-examples --prefix=$(pwd)/.. \
+  && make && make check && make install \
+  && echo "====== SUCCESS NETCDF INSTALL====="\
+  ) || echo "==== FAILED NECTDF INSTALL ===="
 cd ../
 rm -rf netcdf-${NETCDF_VERSION}
-echo "NetCDF ${NETCDF_VERSION} built with mmap support, $(date)" > VERSION.txt
+echo "NetCDF ${NETCDF_VERSION} built with mmap support, on $(date)" > VERSION.txt
 cd ../
 
 
