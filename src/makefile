@@ -1,9 +1,12 @@
-all:
-	g++ -c uri.cpp
-	g++ -c config.cpp
-	g++ -I../netcdf/include -c main.cpp
-	g++  uri.o config.o main.o ../netcdf/lib/libnetcdf.a -o test -ljsoncpp
+LDFLAGS = -ljsoncpp
+
+all : test
+
+FILES = uri config main
+
+test : $(FILES:=.o)
+	$(CXX) $^ -o $@ $(LDFLAGS)
 
 clean:
-	rm -f test
-	rm -f *.o
+	@rm -f test
+	@rm -f $(FILES:=.o)
