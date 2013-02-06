@@ -1,61 +1,62 @@
 #include "config.h"
 
-Config::Config(const ConfigFileName &configFileName)
+
+
+Config::Config (const FileName &fileName) : fileName_ (fileName)
 {
-  
-  configFileName_ = configFileName;
   reload();
-  
 }
+
+
 
 void Config::reload()
 {
+  std::ifstream fileStream (fileName_.c_str());
   
-  std::ifstream configFileStream (configFileName_.c_str());
-  
-  bool parsingSuccessful = reader_.parse( configFileStream, configObject_ );
-  if ( !parsingSuccessful )
+  if ( ! reader_.parse( fileStream, object_ ) )
   {
-      throw ConfigFileException (reader_.getFormattedErrorMessages());
-  }
-  
-}
-
-std::string Config::getString(const ConfigKeyName &configKeyName)
-{
-  if (configObject_.isMember(configKeyName))
-  {
-    if (!configObject_[configKeyName].isString()) {
-      std::stringstream errorMsg;
-      errorMsg << configKeyName << " parameter is not a string";
-      throw ConfigBadTypeException(errorMsg.str());
-    }
-    return configObject_[configKeyName].asString();
-  }
-  else
-  {
-    std::stringstream errorMsg;
-    errorMsg << configKeyName << " not found";
-    throw ConfigKeyNotFoundException(errorMsg.str());
+      throw FileException (reader_.getFormattedErrorMessages());
   }
 }
 
 
-int Config::getInt(const ConfigKeyName &configKeyName)
+
+std::string Config::getString(const KeyName &keyName)
 {
-  if (configObject_.isMember(configKeyName))
+  if (object_.isMember(keyName))
   {
-    if (!configObject_[configKeyName].isNumeric()) {
+    if (!object_[keyName].isString()) {
       std::stringstream errorMsg;
-      errorMsg << configKeyName << " parameter is not a number";
-      throw ConfigBadTypeException(errorMsg.str());
+      errorMsg << keyName << " parameter is not a string";
+      throw BadTypeException(errorMsg.str());
     }
-    return configObject_[configKeyName].asInt();
+    return object_[keyName].asString();
   }
   else
   {
     std::stringstream errorMsg;
-    errorMsg << configKeyName << " not found";
-    throw ConfigKeyNotFoundException(errorMsg.str());
+    errorMsg << keyName << " not found";
+    throw KeyNotFoundException(errorMsg.str());
+  }
+}
+
+
+
+int Config::getInt(const KeyName &keyName)
+{
+  if (object_.isMember(keyName))
+  {
+    if (!object_[keyName].isNumeric()) {
+      std::stringstream errorMsg;
+      errorMsg << keyName << " parameter is not a number";
+      throw BadTypeException(errorMsg.str());
+    }
+    return object_[keyName].asInt();
+  }
+  else
+  {
+    std::stringstream errorMsg;
+    errorMsg << keyName << " not found";
+    throw KeyNotFoundException(errorMsg.str());
   }
 }
