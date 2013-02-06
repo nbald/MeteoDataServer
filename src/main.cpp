@@ -1,10 +1,10 @@
 #include <iostream>
 #include <unistd.h>
 
-#include <jsoncpp/json/json.h>
 #include <netcdf.h>
 
 #include "config.h"
+#include "uri.h"
 
 int main (void) {
     
@@ -14,14 +14,25 @@ int main (void) {
   
   try
   {
+    
     Config config ("../conf/mds-config.json");
     std::cout << "dataDirectory : " << config.getString("dataDirectory") << std::endl;
     std::cout << "nThreads : " << config.getInt("nThreads") << std::endl;
+    
+    
+    Uri uri;
+    uri.parse("/test/?truc=machin&bidule=chouette");
+    
+    std::cout << "truc : " << uri.getVar("truc") << std::endl;
+    std::cout << "bidule : " << uri.getVar("bidule") << std::endl;
+    
+    
   } 
   catch (std::string e)
   {
     std::cerr << e << std::endl;
   }
+  
   
   /*
   int status = NC_NOERR;
