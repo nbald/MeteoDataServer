@@ -18,66 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *  
 */
+
+
 #include "config.h"
 
 
 
-Config::Config (const FileName &fileName) : fileName_ (fileName)
-{
-  reload();
-}
-
-
-
-void Config::reload()
+void Config::reload ()
 {
   std::ifstream fileStream (fileName_.c_str());
   
-  if ( ! reader_.parse( fileStream, object_ ) )
-  {
-      throw FileException (reader_.getFormattedErrorMessages());
-  }
+  if (! reader_.parse (fileStream, object_))
+    throw FileException (reader_.getFormattedErrorMessages ());
 }
 
 
 
-std::string Config::getString(const KeyName &keyName)
+std::string Config::getString (KeyName const &keyName)
 {
-  if (object_.isMember(keyName))
-  {
-    if (!object_[keyName].isString()) {
-      std::stringstream errorMsg;
-      errorMsg << keyName << " parameter is not a string";
-      throw BadTypeException(errorMsg.str());
-    }
-    return object_[keyName].asString();
-  }
-  else
-  {
-    std::stringstream errorMsg;
-    errorMsg << keyName << " not found";
-    throw KeyNotFoundException(errorMsg.str());
-  }
+  if (! object_.isMember (keyName))
+    throw KeyNotFoundException (keyName + " not found");
+
+  if (! object_[keyName].isString ())
+    throw BadTypeException (keyName + " parameter is not a string");
+
+  return object_[keyName].asString ();
 }
 
 
 
-int Config::getInt(const KeyName &keyName)
+int Config::getInt (KeyName const &keyName)
 {
-  if (object_.isMember(keyName))
-  {
-    if (!object_[keyName].isNumeric())
-    {
-      std::stringstream errorMsg;
-      errorMsg << keyName << " parameter is not a number";
-      throw BadTypeException(errorMsg.str());
-    }
-    return object_[keyName].asInt();
-  }
-  else
-  {
-    std::stringstream errorMsg;
-    errorMsg << keyName << " not found";
-    throw KeyNotFoundException(errorMsg.str());
-  }
+  if (! object_.isMember (keyName))
+    throw KeyNotFoundException (keyName + " not found");
+
+  if (! object_[keyName].isNumeric ())
+    throw BadTypeException (keyName + " parameter is not a number");
+
+  return object_[keyName].asInt ();
 }

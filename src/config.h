@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  
-*/
+ */
+
 #ifndef MDS_CONFIG
 #define MDS_CONFIG
 
@@ -39,10 +39,15 @@ class Config
   typedef std::string BadTypeException;
 
 public:
-  Config(const FileName &);
-  std::string getString(const KeyName &);
-  int getInt(const KeyName &);
-  void reload();
+
+  Config (const FileName &f) : fileName_ (f) { reload(); }
+
+  std::string getString (const KeyName &);
+
+  int getInt (const KeyName &);
+
+  void reload ();
+
 
 protected:
 
