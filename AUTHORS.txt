@@ -18,13 +18,16 @@ Copyright (c) 2013 the OpenMeteoData project
 * External libraries:
 
     * NetCDF C API
-      Copyright (c) 1993-2012 Unidata
-      University Corporation for Atmospheric Research
+      Copyright (c) 1993-2012 UCAR / Unidata
       http://www.unidata.ucar.edu/software/netcdf/
 
     * JsonCpp
       Copyright (c) 2007-2010 Baptiste Lepilleur
       http://sourceforge.net/projects/jsoncpp/
+
+    * PROJ.4
+      Copyright (c) 2000 Frank Warmerdam
+      http://trac.osgeo.org/proj/
 
     * url decoding function from :
       http://stackoverflow.com/questions/154536/encode-decode-urls-in-c
