@@ -18,38 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *  
 */
-#ifndef MDS_CONFIG
-#define MDS_CONFIG
+#ifndef MDS_WRFPROJECTION
+#define MDS_WRFPROJECTION
 
 #include <string>
-#include <fstream>
-#include <sstream>
 
-#include <jsoncpp/json/json.h>
+#define WRF_EARTH_RADIUS 6370000 // do not change
 
-class Config
-{
+class WrfProjection {
 
-  typedef std::string FileName;
-  typedef Json::Value Object;
-  typedef std::string KeyName;
+  typedef std::string String;
   
-  typedef std::string FileException;
-  typedef std::string KeyNotFoundException;
-  typedef std::string BadTypeException;
-
+  enum Type {
+    LAMBERT_CONFORMAL = 1,
+    POLAR_STEREOGRAPHIC = 2,
+    MERCATOR = 3,
+    ROTATED_LATLON = 6
+  };
+  
 public:
-  Config(const FileName &);
-  std::string getString(const KeyName &);
-  int getInt(const KeyName &);
-  void reload();
-
 protected:
-
 private:
-  Object object_;
-  FileName fileName_;
-  Json::Reader reader_;
+  
+  String string_;
+  
+  
 };
 
 #endif

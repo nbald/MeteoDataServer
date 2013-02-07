@@ -1,16 +1,38 @@
+/*
+ * Copyright (c) 2013 the OpenMeteoData project
+ * All rights reserved.
+ *
+ * Author: Nicolas BALDECK <nicolas.baldeck@openmeteodata.org>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+*/
 #include "uri.h"
 
-void Uri::parse(String string)
+
+void Uri::parse(QueryString queryString)
 {
     std::vector<std::string> args;
 
     // cleanup
-    urlDecode(string);
+    urlDecode(queryString);
 
     // find the beginning of ?arg=
-    size_t pos = string.find_first_of("?&");
+    size_t pos = queryString.find_first_of("?&");
 
-    if (pos == std::string::npos || pos+1 >= string.size() ) {
+    if (pos == std::string::npos || pos+1 >= queryString.size() )
+    {
         throw EmptyException ("Uri is empty");
     }
 
@@ -18,14 +40,13 @@ void Uri::parse(String string)
     pos++;
 
     // handle ?&arg= case
-    if (string.at(pos) == '&') pos++;
+    if (queryString.at(pos) == '&') pos++;
 
     // keep only the interesting part
-    string = string.substr(pos, std::string::npos);
+    queryString = queryString.substr(pos, std::string::npos);
 
     // cut queries
-
-    split(args, string, '&');
+    split(args, queryString, '&');
 
     // to lower
     /*transform(string.begin(), string.end(), string.begin(), ::tolower);*/
@@ -45,7 +66,7 @@ void Uri::parse(String string)
         }
     }
 
-    string_ = string;
+    string_ = queryString;
 }
 
 
@@ -53,40 +74,44 @@ bool Uri::isVar(Key uriKey) {
     return (vars_.count(uriKey) != 0);
 }
 
-Uri::Value Uri::getVar(Key uriKey)
+Uri::Value Uri::getVar(Key key)
 {
-    if ( isVar(uriKey) )
+    if ( isVar(key) )
     {
-        return vars_[uriKey];
+        return vars_[key];
     } else {
         std::stringstream errorMsg;
-	errorMsg << uriKey << " parameter is missing";
+          errorMsg << key << " parameter is missing";
 	throw KeyNotFoundException (errorMsg.str());
     }
 }
 
+
 // from http://stackoverflow.com/questions/154536/encode-decode-urls-in-c
-void Uri::urlDecode(std::string& SRC)
+void Uri::urlDecode(QueryString& queryString)
 {
     std::string ret;
-    for (size_t i=0; i<SRC.length(); ++i)
+
+    for (size_t i=0; i<queryString.length(); ++i)
     {
-        if (unsigned(SRC[i])==37)
+        if (unsigned(queryString[i])==37)
         {
-            unsigned ii;
-            sscanf(SRC.substr(i+1,2).c_str(), "%x", &ii);
+	    unsigned ii;
+            sscanf(queryString.substr(i+1,2).c_str(), "%x", &ii);
             char ch=static_cast<char>(ii);
             ret+=ch;
             i=i+2;
         } else
         {
-            ret+=SRC[i];
+            ret+=queryString[i];
         }
     }
-    SRC=ret;
+    queryString=ret;
 }
 
-void Uri::split(std::vector<std::string>& splitStr, std::string str, char delimiter)
+
+
+void Uri::split(std::vector<std::string>& splitStr, std::string const &str, char delimiter)
 {
     std::stringstream ss(str);
     std::string item;

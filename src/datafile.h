@@ -18,38 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *  
 */
-#ifndef MDS_CONFIG
-#define MDS_CONFIG
+#ifndef MDS_DATAFILE
+#define MDS_DATAFILE
 
 #include <string>
-#include <fstream>
-#include <sstream>
 
-#include <jsoncpp/json/json.h>
-
-class Config
+class DataFile
 {
 
+  typedef int Handle;
   typedef std::string FileName;
-  typedef Json::Value Object;
-  typedef std::string KeyName;
   
-  typedef std::string FileException;
-  typedef std::string KeyNotFoundException;
-  typedef std::string BadTypeException;
-
 public:
-  Config(const FileName &);
-  std::string getString(const KeyName &);
-  int getInt(const KeyName &);
-  void reload();
-
+  DataFile(const FileName &);
+  ~DataFile();
 protected:
-
 private:
-  Object object_;
-  FileName fileName_;
-  Json::Reader reader_;
+  Handle handle_;
 };
 
 #endif

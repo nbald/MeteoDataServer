@@ -1,13 +1,12 @@
-LDFLAGS = -ljsoncpp
+LDFLAGS = ../netcdf/lib/libnetcdf.a -ljsoncpp
+CXXFLAGS = -g -DDEBUG -I../netcdf/include
 
 all : test
 
-HEADERS = uri config
-FILES = uri config main
+CLASSES = uri config dataset datafile
 
-test : $(FILES:=.o) $(HEADERS:=.h)
-	$(CXX) $(FILES:=.o) -o $@ $(LDFLAGS)
+test : $(CLASSES:=.o) main.o $(CLASSES:=.h)
+	$(CXX) $(CLASSES:=.o) main.o -o $@ $(LDFLAGS)
 
 clean:
-	@rm -f test
-	@rm -f $(FILES:=.o)
+	@rm -f test $(CLASSES:=.o) main.o
