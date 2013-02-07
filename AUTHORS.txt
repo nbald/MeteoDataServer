@@ -1,0 +1,30 @@
+AUTHORS.txt for MeteoDataServer
+
+MeteoDataServer - Server-side software for the OpenMeteoData API
+
+Copyright (c) 2013 the OpenMeteoData project
+
+
+* Design and Coding:
+
+    Nicolas BALDECK <nicolas.baldeck@openmeteodata.org>
+
+
+* Code review:
+
+    Dale MELLOR <dale@rdmp.org>
+
+
+* External libraries:
+
+    * NetCDF C API
+      Copyright (c) 1993-2012 Unidata
+      University Corporation for Atmospheric Research
+      http://www.unidata.ucar.edu/software/netcdf/
+
+    * JsonCpp
+      Copyright (c) 2007-2010 Baptiste Lepilleur
+      http://sourceforge.net/projects/jsoncpp/
+
+    * url decoding function from :
+      http://stackoverflow.com/questions/154536/encode-decode-urls-in-c
