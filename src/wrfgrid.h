@@ -24,6 +24,7 @@
 #define MDS_WRFGRID
 
 #include <string>
+#include <sstream>
 
 #include <proj_api.h>
 
@@ -33,14 +34,14 @@
 class WrfGrid {
 
 public:
-  typedef std::string Proj4String;
+  typedef std::string ProjString;
   typedef int PointsCount;
   typedef float Meters;
   typedef float Latitude;
   typedef float Longitude;
   typedef std::string GridType;
   
-  enum ProjectionType {
+  enum ProjectionType { // do not change the IDs
     PROJ_LAMBERT_CONFORMAL = 1,
     PROJ_POLAR_STEREOGRAPHIC = 2,
     PROJ_MERCATOR = 3,
@@ -65,11 +66,12 @@ public:
     int mapProj; // can't convert int to enum
   };
 
-
   void setParameters(Parameters const &);
+  ProjString getProjString ();
 protected:
 private:
-  Proj4String projString_;
+  Parameters parameters_;
+  ProjString projString_;
 };
 
 #endif

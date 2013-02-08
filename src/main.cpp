@@ -56,6 +56,10 @@ int main (void)
     std::cout << "dx : " << parameters.dX << std::endl;
     std::cout << "centLat : " << parameters.cenLat << std::endl;
     
+    WrfGrid wrfGrid;
+    wrfGrid.setParameters(parameters);
+    std::cout << "proj4 : " << wrfGrid.getProjString() << std::endl;
+    
   } 
   catch (std::string const &e)
   {

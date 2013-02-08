@@ -22,7 +22,60 @@
 */
 #include "wrfgrid.h"
 
+void WrfGrid::setParameters(const WrfGrid::Parameters& parameters)
+{
+  parameters_ = parameters;
+}
+
+WrfGrid::ProjString WrfGrid::getProjString ()
+{
+  std::stringstream projStream;
+  
+  switch (parameters_.mapProj) {
+    
+    case PROJ_LAMBERT_CONFORMAL:
+      projStream << "+proj=lcc"
+                 << " +lon_0=" << parameters_.standLon
+                 << " +lat_0=" << parameters_.moadCenLat
+                 << " +lat_1=" << parameters_.trueLat1
+                 << " +lat_2=" << parameters_.trueLat2;
+      break;
+      
+    case PROJ_POLAR_STEREOGRAPHIC:
+      /* TODO proj4 << "+proj=stere";
+      {
+	double lon0 = (mifi_isnan(standardLon)) ? centralLon : standardLon;
+	double lat0 = (mifi_isnan(centralLat)) ? lat2 : centralLat;
+	double k = (1+fabs(sin(DEG_TO_RAD*lat1)))/2.;
+	proj4 << " +lon_0="<<lon0<<" +lat_0="<<lat0<<" +k="<<k;
+      }*/
+      throw "polar proj not implemented";
+      break;
+      
+    case PROJ_MERCATOR:
+      projStream << "+proj=merc"
+                 << " +lon_0=" << parameters_.standLon
+                 << " +lat_0=" << parameters_.moadCenLat;
+      break;
+      
+    case PROJ_ROTATED_LATLON:
+      throw "latlon proj not implemented";
+      break;
+      
+    default:
+      throw "unknown projection";
+      
+  }
+  
+  projStream << " +R=" << WRF_EARTH_RADIUS << " +no_defs";
+  
+  return projStream.str();
+}
+
 /*
+ * http://www.mmm.ucar.edu/wrf/WG2/wrfbrowser/html_code/share/module_llxy.F.html
+ * http://www.mmm.ucar.edu/wrf/src/read_wrf_nc.f
+ * 
  * http://mailman.ucar.edu/pipermail/ncl-talk/attachments/20091015/d00d5a47/attachment-0001.obj
  * ftp://ftp.heanet.ie/mirrors/sourceforge/s/sp/spallocator/raster/computeGridGOES_ori.cpp
  * https://collab.firelab.org/software/projects/windninja/repository/entry/branches/stability/src/ninja/wrfSurfInitialization.cpp
