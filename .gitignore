@@ -5,4 +5,4 @@ netcdf/*
 build/*
 src/test
 src/a.out
-.kdev4/*
+*kdev4*
