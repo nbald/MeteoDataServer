@@ -20,22 +20,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *  
 */
-#ifndef MDS_DATASET
-#define MDS_DATASET
-
-#include "datafile.h"
-#include "wrfgrid.h"
-
-
-class Dataset {
-
-  
-public:
-  
-protected:
-private:
-  WrfGrid wrfgrid_;
-
-};
-
-#endif
+#include <MeteoDataServer/dataset.h>

@@ -18,6 +18,50 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  
-*/
-#include "dataset.h"
+ */
+
+#ifndef METEO_DATA_SERVER__DATAFILE__H
+#define METEO_DATA_SERVER__DATAFILE__H
+
+#include <string>
+#include <vector>
+#include <map>
+
+#ifdef DEBUG
+#include <iostream>
+#endif
+
+#include <netcdf.h>
+
+#include <MeteoDataServer/wrfgrid.h>
+
+
+namespace MeteoDataServer {
+
+
+  class DataFile
+  {
+
+    typedef int Handle;
+    typedef std::string FileName;
+    typedef std::string Time;
+    typedef std::vector<Time> TimesList;
+
+    typedef std::string NetCdfException;
+
+  public:
+    DataFile(const FileName &);
+    ~DataFile();
+    WrfGrid::Parameters getGridParameters();
+  protected:
+  private:
+    Handle handle_;
+
+
+  };  /* End of class DataFile. */
+
+
+}  /* End of namespace MeteoDataServer. */
+
+
+#endif  /* Undefined METEO_DATA_SERVER__DATAFILE__H. */
