@@ -24,15 +24,17 @@
 #define MDS_DATASET
 
 #include "datafile.h"
-#include "wrfprojection.h"
+#include "wrfgrid.h"
+
 
 class Dataset {
 
+  
 public:
   
 protected:
 private:
-  WrfProjection wrfProjection_;
+  WrfGrid wrfgrid_;
 
 };
 

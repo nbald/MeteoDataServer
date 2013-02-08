@@ -20,31 +20,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *  
 */
-#ifndef MDS_WRFPROJECTION
-#define MDS_WRFPROJECTION
+#ifndef MDS_WRFGRID
+#define MDS_WRFGRID
 
 #include <string>
 
+#include <proj_api.h>
+
+
 #define WRF_EARTH_RADIUS 6370000 // do not change
 
-class WrfProjection {
+class WrfGrid {
 
-  typedef std::string String;
+public:
+  typedef std::string Proj4String;
+  typedef int PointsCount;
+  typedef float Meters;
+  typedef float Latitude;
+  typedef float Longitude;
+  typedef std::string GridType;
   
-  enum Type {
-    LAMBERT_CONFORMAL = 1,
-    POLAR_STEREOGRAPHIC = 2,
-    MERCATOR = 3,
-    ROTATED_LATLON = 6
+  enum ProjectionType {
+    PROJ_LAMBERT_CONFORMAL = 1,
+    PROJ_POLAR_STEREOGRAPHIC = 2,
+    PROJ_MERCATOR = 3,
+    PROJ_ROTATED_LATLON = 6
   };
   
-public:
+  struct Parameters {
+    PointsCount nWestEast;
+    PointsCount nSouthNorth;
+    PointsCount nBottomTop;
+    Meters dX;
+    Meters dY;
+    GridType gridType;
+    Latitude cenLat;
+    Longitude cenLon;
+    Latitude trueLat1;
+    Latitude trueLat2;
+    Latitude moadCenLat;
+    Longitude standLon;
+    Latitude poleLat;
+    Longitude poleLon;
+    int mapProj; // can't convert int to enum
+  };
+
+
+  void setParameters(Parameters const &);
 protected:
 private:
-  
-  String string_;
-  
-  
+  Proj4String projString_;
 };
 
 #endif

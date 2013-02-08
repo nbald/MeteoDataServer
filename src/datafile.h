@@ -25,12 +25,15 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #ifdef DEBUG
 #include <iostream>
 #endif
 
 #include <netcdf.h>
+
+#include "wrfgrid.h"
 
 class DataFile
 {
@@ -40,11 +43,12 @@ class DataFile
   typedef std::string Time;
   typedef std::vector<Time> TimesList;
   
-  typedef std::string FileException;
+  typedef std::string NetCdfException;
 
 public:
   DataFile(const FileName &);
   ~DataFile();
+  WrfGrid::Parameters getGridParameters();
 protected:
 private:
   Handle handle_;

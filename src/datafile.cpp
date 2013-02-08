@@ -21,6 +21,7 @@
  *  
 */
 #include "datafile.h"
+#include <map>
 
 
 
@@ -31,7 +32,7 @@ DataFile::DataFile(const FileName &fileName)
     std::cout << "open NetCDF file : " << fileName << std::endl;
   #endif
   
-  int sucessfullOpen = nc_open(fileName.c_str(), NC_SHARE|NC_DISKLESS|NC_MMAP, &handle_);
+  int status = nc_open(fileName.c_str(), NC_SHARE|NC_DISKLESS|NC_MMAP, &handle_);
  /* 
   * NC_SHARE : from doc : Since the buffering scheme is optimized 
   * for sequential access, programs that do not access data sequentially
@@ -46,17 +47,62 @@ DataFile::DataFile(const FileName &fileName)
   * Ubuntu's libnetcdf doesn't include mmap support.
   */
   
-  if (sucessfullOpen != NC_NOERR)
+  if (status != NC_NOERR)
   {
-    throw FileException ("can't open " + fileName);
+    throw NetCdfException (nc_strerror(status));
   }
 
   #ifdef DEBUG
     std::cout << "handle : #" << handle_ << std::endl;
   #endif
-  
+      
 }
 
+
+WrfGrid::Parameters DataFile::getGridParameters()
+{
+  WrfGrid::Parameters parameters;
+
+  std::map<const char *, int*> intParameters;
+  intParameters["WEST-EAST_GRID_DIMENSION"] = &parameters.nWestEast;
+  intParameters["SOUTH-NORTH_GRID_DIMENSION"] = &parameters.nSouthNorth;
+  intParameters["BOTTOM-TOP_GRID_DIMENSION"] = &parameters.nBottomTop;
+  intParameters["MAP_PROJ"] = &parameters.mapProj;
+  
+  std::map<const char *, int*>::iterator iterInt;
+  for (iterInt = intParameters.begin(); iterInt != intParameters.end(); ++iterInt)
+  {
+    int status = nc_get_att_int (handle_, NC_GLOBAL, iterInt->first, iterInt->second);
+    if (status != NC_NOERR)
+    {
+      throw NetCdfException (nc_strerror(status));
+    }
+  }
+  
+  std::map<const char *, float*> floatParameters;
+  floatParameters["DX"] = &parameters.dX;
+  floatParameters["DY"] = &parameters.dY;
+  floatParameters["CEN_LAT"] = &parameters.cenLat;
+  floatParameters["CEN_LON"] = &parameters.cenLon;
+  floatParameters["TRUELAT1"] = &parameters.trueLat1;
+  floatParameters["TRUELAT2"] = &parameters.trueLat2;
+  floatParameters["MOAD_CEN_LAT"] = &parameters.moadCenLat;
+  floatParameters["STAND_LON"] = &parameters.standLon;
+  floatParameters["POLE_LAT"] = &parameters.poleLat;
+  floatParameters["POLE_LON"] = &parameters.poleLon;
+  
+  std::map<const char *, float*>::iterator iterFloat;
+  for (iterFloat = floatParameters.begin(); iterFloat != floatParameters.end(); ++iterFloat)
+  {
+    int status = nc_get_att_float (handle_, NC_GLOBAL, iterFloat->first, iterFloat->second);
+    if (status != NC_NOERR)
+    {
+      throw NetCdfException (nc_strerror(status));
+    }
+  }
+  
+  return parameters;
+}
 
 
 DataFile::~DataFile()
@@ -66,11 +112,11 @@ DataFile::~DataFile()
     std::cout << "close NetCDF file #" << handle_ << std::endl;
   #endif
   
-  int successfulClose = nc_close(handle_);
+  int status = nc_close(handle_);
   
-  if (successfulClose != NC_NOERR)
+  if (status != NC_NOERR)
   {
-    throw FileException ("error closing NetCDF file");
+    throw NetCdfException (nc_strerror(status));
   }
   
 }

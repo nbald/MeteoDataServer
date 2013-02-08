@@ -50,6 +50,12 @@ int main (void)
     
     DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
     
+    WrfGrid::Parameters parameters;
+    parameters = dataFile.getGridParameters();
+    
+    std::cout << "dx : " << parameters.dX << std::endl;
+    std::cout << "centLat : " << parameters.cenLat << std::endl;
+    
   } 
   catch (std::string const &e)
   {
