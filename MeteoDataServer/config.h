@@ -20,42 +20,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MDS_CONFIG
-#define MDS_CONFIG
+#ifndef METEO_DATA_SERVER__CONFIG__H
+#define METEO_DATA_SERVER__CONFIG__H
 
 #include <string>
 #include <fstream>
 
 #include <jsoncpp/json/json.h>
 
-class Config
-{
 
-  typedef std::string FileName;
-  typedef Json::Value Object;
-  typedef std::string KeyName;
+namespace MeteoDataServer {
   
-  typedef std::string FileException;
-  typedef std::string KeyNotFoundException;
-  typedef std::string BadTypeException;
 
-public:
+  class Config
+  {
 
-  Config (const FileName &f) : fileName_ (f) { reload(); }
+    typedef std::string FileName;
+    typedef Json::Value Object;
+    typedef std::string KeyName;
+    
+    typedef std::string FileException;
+    typedef std::string KeyNotFoundException;
+    typedef std::string BadTypeException;
 
-  std::string getString (const KeyName &);
+  public:
 
-  int getInt (const KeyName &);
+    Config (const FileName &f) : fileName_ (f) { reload(); }
 
-  void reload ();
+    std::string getString (const KeyName &);
+
+    int getInt (const KeyName &);
+
+    void reload ();
 
 
-protected:
+  protected:
 
-private:
-  Object object_;
-  FileName fileName_;
-  Json::Reader reader_;
-};
+  private:
+    Object object_;
+    FileName fileName_;
+    Json::Reader reader_;
 
-#endif
+  };  /* End of class Config. */
+
+
+}  /* End of namespace MeteoDataServer. */
+
+  
+#endif  /* Undefined METEO_DATA_SERVER__CONFIG__H. */
