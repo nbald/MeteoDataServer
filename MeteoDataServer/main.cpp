@@ -37,28 +37,29 @@ int main (void)
   try
   {
     
-    Config config ("../conf/mds-config.json");
+    MeteoDataServer::Config config ("../conf/mds-config.json");
+
     std::cout << "dataDirectory : " << config.getString("dataDirectory")
               << '\n';
     
     std::cout << "nThreads : " << config.getInt("nThreads") << '\n';
     
     
-    Uri uri;
+    MeteoDataServer::Uri uri;
     uri.parse("/test/?truc=machin&bidule=chouette");
     
     std::cout << "truc : " << uri.getVar("truc") << '\n';
     std::cout << "bidule : " << uri.getVar("bidule") << '\n';
     
-    DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
+    MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
     
-    WrfGrid::Parameters parameters;
+    MeteoDataServer::WrfGrid::Parameters parameters;
     parameters = dataFile.getGridParameters();
     
     std::cout << "dx : " << parameters.dX << std::endl;
     std::cout << "centLat : " << parameters.cenLat << std::endl;
     
-    WrfGrid wrfGrid;
+    MeteoDataServer::WrfGrid wrfGrid;
     wrfGrid.setParameters(parameters);
     std::cout << "proj4 : " << wrfGrid.getProjString() << std::endl;
     

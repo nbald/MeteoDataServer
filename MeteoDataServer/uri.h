@@ -21,8 +21,8 @@
  */
 
 
-#ifndef MDS_URI_H
-#define MDS_URI_H
+#ifndef METEO_DATA_SERVER__URI__H
+#define METEO_DATA_SERVER__URI__H
 
 
 #include <vector>
@@ -32,38 +32,46 @@
 #include <map>
 
 
-
-class Uri
-{
-  typedef std::string QueryString;
-  typedef std::string Value;
-  typedef std::string Key;
-  
-  typedef std::string EmptyException;
-  typedef std::string KeyNotFoundException;
-  
-public:
-
-  QueryString getString () const { return uriString_; }
-
-  void parse (QueryString const &string);
-
-  std::string urlDecode (QueryString const &queryString);
-
-  void split (std::vector<std::string> &splitStr,
-              std::string const &str,
-              char const &delimiter);
-
-  Value getVar (Key const &) const;
-
-  bool isVar (Key const &key) const { return vars_.count (key); }
+namespace MeteoDataServer {
 
 
-protected:
+  class Uri
+  {
+    typedef std::string QueryString;
+    typedef std::string Value;
+    typedef std::string Key;
 
-private:
-  QueryString uriString_;
-  std::map<Key,Value> vars_;
-};
+    typedef std::string EmptyException;
+    typedef std::string KeyNotFoundException;
 
-#endif
+  public:
+
+    QueryString getString () const { return uriString_; }
+
+    void parse (QueryString const &string);
+
+    std::string urlDecode (QueryString const &queryString);
+
+    void split (std::vector<std::string> &splitStr,
+                std::string const &str,
+                char const &delimiter);
+
+    Value getVar (Key const &) const;
+
+    bool isVar (Key const &key) const { return vars_.count (key); }
+
+
+  protected:
+
+  private:
+    QueryString uriString_;
+    std::map<Key,Value> vars_;
+
+
+  };  /* End of class Uri. */
+
+
+}  /* End of namespace MeteoDataServer. */
+
+
+#endif  /* Undefined METEO_DATA_SERVER__URI__H. */
