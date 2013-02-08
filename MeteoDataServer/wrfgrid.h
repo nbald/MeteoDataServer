@@ -18,9 +18,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
+ *  
+*/
 #ifndef METEO_DATA_SERVER__WRF_GRID__H
 #define METEO_DATA_SERVER__WRF_GRID__H
 
@@ -30,54 +29,77 @@
 #include <proj_api.h>
 
 
-namespace MeteoDataServer {
-  
-
 #define WRF_EARTH_RADIUS 6370000 // do not change
+#define PROJ_NOT_INITIALIZED 0
+
+namespace MeteoDataServer {
 
   class WrfGrid {
 
-  public:
-    typedef std::string ProjString;
-    typedef int PointsCount;
-    typedef float Meters;
-    typedef float Latitude;
-    typedef float Longitude;
-    typedef std::string GridType;
+    public:
+      typedef std::string ProjString;
+      typedef int PointsCount;
+      typedef float Meters;
+      typedef float Latitude;
+      typedef float Longitude;
+      typedef std::string GridType;
+      typedef unsigned int GridX;
+      typedef unsigned int GridY;
+      
+      typedef std::string ProjException;
+      
+      enum ProjectionType { // do not change the IDs
+	PROJ_LAMBERT_CONFORMAL = 1,
+	PROJ_POLAR_STEREOGRAPHIC = 2,
+	PROJ_MERCATOR = 3,
+	PROJ_ROTATED_LATLON = 6
+      };
+      
+      struct Parameters {
+	PointsCount nWestEast;
+	PointsCount nSouthNorth;
+	PointsCount nBottomTop;
+	Meters dX;
+	Meters dY;
+	GridType gridType;
+	Latitude cenLat;
+	Longitude cenLon;
+	Latitude trueLat1;
+	Latitude trueLat2;
+	Latitude moadCenLat;
+	Longitude standLon;
+	Latitude poleLat;
+	Longitude poleLon;
+	int mapProj; // can't convert int to enum
+      };
+      
+      struct Projection {
+	ProjString string;
+	Meters top;
+	Meters left;
+	projPJ proj;
+	bool initialised;
+      };
 
-    enum ProjectionType { // do not change the IDs
-      PROJ_LAMBERT_CONFORMAL = 1,
-      PROJ_POLAR_STEREOGRAPHIC = 2,
-      PROJ_MERCATOR = 3,
-      PROJ_ROTATED_LATLON = 6
-    };
-
-    struct Parameters {
-      PointsCount nWestEast;
-      PointsCount nSouthNorth;
-      PointsCount nBottomTop;
-      Meters dX;
-      Meters dY;
-      GridType gridType;
-      Latitude cenLat;
-      Longitude cenLon;
-      Latitude trueLat1;
-      Latitude trueLat2;
-      Latitude moadCenLat;
-      Longitude standLon;
-      Latitude poleLat;
-      Longitude poleLon;
-      int mapProj; // can't convert int to enum
-    };
-
-    void setParameters(Parameters const &);
-    ProjString getProjString ();
-  protected:
-  private:
-    Parameters parameters_;
-    ProjString projString_;
-
-
+      struct WgsCoordinates {
+	Latitude lat;
+	Longitude lon;
+      };
+      
+      struct GridCoordinates {
+	GridX x;
+	GridY y;
+      };
+      
+      WrfGrid();
+      ~WrfGrid();
+      void initGrid(Parameters const &);
+      GridCoordinates wgsToGridCoordinates(WgsCoordinates const &);
+      GridCoordinates wgsToGridCoordinates(Latitude const &, Longitude const &);
+    protected:
+    private:
+      ProjString makeProjString_(Parameters const &);
+      Projection projection_;
   };  /* End of class WrfGrid. */
 
 

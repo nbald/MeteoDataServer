@@ -3,6 +3,6 @@
 data/*
 netcdf/*
 build/*
-src/test
-src/a.out
+MeteoDataServer/test
+MeteoDataServer/a.out
 *kdev4*
