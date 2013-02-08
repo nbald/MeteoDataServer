@@ -3,12 +3,10 @@ CXXFLAGS = -g -Wall -DDEBUG -I../netcdf/include
 
 all : test
 
-HEADERS = uri config dataset datafile wrfgrid
-FILES = uri config dataset datafile wrfgrid main
+CLASSES = uri config dataset datafile wrfgrid
 
-test : $(FILES:=.o) $(HEADERS:=.h)
-	$(CXX) $(FILES:=.o) -o $@ $(LDFLAGS)
+test : $(CLASSES:=.o) main.o $(CLASSES:=.h)
+	$(CXX) $(CLASSES:=.o) main.o -o $@ $(LDFLAGS)
 
 clean:
-	@rm -f test
-	@rm -f $(FILES:=.o)
+	@rm -f test $(CLASSES:=.o) main.o

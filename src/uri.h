@@ -18,10 +18,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  
-*/
+ */
+
+
 #ifndef MDS_URI_H
 #define MDS_URI_H
+
 
 #include <vector>
 #include <string>
@@ -29,9 +31,10 @@
 #include <cstdio>
 #include <map>
 
+
+
 class Uri
 {
-  
   typedef std::string QueryString;
   typedef std::string Value;
   typedef std::string Key;
@@ -40,15 +43,27 @@ class Uri
   typedef std::string KeyNotFoundException;
   
 public:
-    void parse(Uri::QueryString string);
-    void urlDecode(Uri::QueryString& queryString);
-    void split(std::vector< std::string >& splitStr, const std::string& str, char delimiter);
-    Value getVar(Key);
-    bool isVar(Key);
+
+  QueryString getString () const { return uriString_; }
+
+  void parse (QueryString const &string);
+
+  std::string urlDecode (QueryString const &queryString);
+
+  void split (std::vector<std::string> &splitStr,
+              std::string const &str,
+              char const &delimiter);
+
+  Value getVar (Key const &) const;
+
+  bool isVar (Key const &key) const { return vars_.count (key); }
+
+
 protected:
+
 private:
-    QueryString uriString_;
-    std::map<Key,Value> vars_;
+  QueryString uriString_;
+  std::map<Key,Value> vars_;
 };
 
 #endif
