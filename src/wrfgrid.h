@@ -30,6 +30,7 @@
 
 
 #define WRF_EARTH_RADIUS 6370000 // do not change
+#define PROJ_NOT_INITIALIZED 0
 
 class WrfGrid {
 
@@ -40,6 +41,10 @@ public:
   typedef float Latitude;
   typedef float Longitude;
   typedef std::string GridType;
+  typedef unsigned int GridX;
+  typedef unsigned int GridY;
+  
+  typedef std::string ProjException;
   
   enum ProjectionType { // do not change the IDs
     PROJ_LAMBERT_CONFORMAL = 1,
@@ -65,13 +70,34 @@ public:
     Longitude poleLon;
     int mapProj; // can't convert int to enum
   };
+  
+  struct Projection {
+    ProjString string;
+    Meters top;
+    Meters left;
+    projPJ proj;
+    bool initialised;
+  };
 
-  void setParameters(Parameters const &);
-  ProjString getProjString ();
+  struct WgsCoordinates {
+    Latitude lat;
+    Longitude lon;
+  };
+  
+  struct GridCoordinates {
+    GridX x;
+    GridY y;
+  };
+  
+  WrfGrid();
+  ~WrfGrid();
+  void initGrid(Parameters &);
+  GridCoordinates wgsToGridCoordinates(WgsCoordinates const &);
+  GridCoordinates wgsToGridCoordinates(Latitude const &, Longitude const &);
 protected:
 private:
-  Parameters parameters_;
-  ProjString projString_;
+  ProjString makeProjString_(WrfGrid::Parameters& parameters);
+  Projection projection_;
 };
 
 #endif
