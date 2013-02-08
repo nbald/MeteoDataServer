@@ -18,110 +18,101 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  
-*/
+ */
+
+
 #include "uri.h"
 
 
-void Uri::parse(QueryString queryString)
+void Uri::parse (QueryString const &queryString_)
 {
-    std::vector<std::string> args;
+  // cleanup
+  std::string queryString (urlDecode (queryString_));
 
-    // cleanup
-    urlDecode(queryString);
+  // find the beginning of ?arg=
+  size_t pos = queryString.find_first_of ("?&");
 
-    // find the beginning of ?arg=
-    size_t pos = queryString.find_first_of("?&");
+  if (pos == queryString.npos  ||  pos+1 >= queryString.size ())
+    throw EmptyException ("Uri is empty");
 
-    if (pos == std::string::npos || pos+1 >= queryString.size() )
+  // we don't want to catch the '?'
+  ++pos;
+
+  // handle ?&arg= case
+  if (queryString.at (pos) == '&')
+    ++pos;
+
+  // keep only the interesting part
+  queryString = queryString.substr (pos, std::string::npos);
+
+  // cut queries
+  std::vector<std::string> args;
+  split (args, queryString, '&');
+
+  // to lower
+  /*transform(string.begin(), string.end(), string.begin(), ::tolower);*/
+
+  // separate variables name and data
+  for (size_t i = 0; i < args.size (); ++i)
     {
-        throw EmptyException ("Uri is empty");
+      std::vector<std::string> tmp;
+      split (tmp, args [i], '=');
+
+      if (tmp.size () == 2)
+        vars_ [tmp [0]] = tmp [1];
+    
+      else if (tmp.size () == 1)
+        vars_ [tmp [0]] = "";
     }
 
-    // we don't want to catch the '?'
-    pos++;
-
-    // handle ?&arg= case
-    if (queryString.at(pos) == '&') pos++;
-
-    // keep only the interesting part
-    queryString = queryString.substr(pos, std::string::npos);
-
-    // cut queries
-    split(args, queryString, '&');
-
-    // to lower
-    /*transform(uriString.begin(), uriString.end(), uriString.begin(), ::tolower);*/
-
-    // separate variables name and data
-    size_t n = args.size();
-    for (size_t i=0; i<n; i++)
-    {
-        std::vector<std::string> tmp;
-        split(tmp, args[i], '=');
-        if (tmp.size() == 2)
-        {
-            vars_.insert(std::make_pair(tmp[0],tmp[1]));
-        } else if (tmp.size() == 1)
-        {
-            vars_.insert(std::make_pair(tmp[0],""));
-        }
-    }
-
-    uriString_ = queryString;
-
+  uriString_ = queryString;
 }
 
 
 
-bool Uri::isVar(Key key) {
-    return (vars_.count(key) != 0);
-}
-
-
-
-
-Uri::Value Uri::getVar(Key key)
+Uri::Value Uri::getVar (Key const &key) const
 {
-    if ( isVar(key) )
-    {
-        return vars_[key];
-    } else {
-	throw KeyNotFoundException (key + " parameter is missing");
-    }
+  if (! isVar (key))
+    throw KeyNotFoundException (key + " parameter is missing");
+
+  return vars_.at (key);
 }
+
 
 
 // from http://stackoverflow.com/questions/154536/encode-decode-urls-in-c
-void Uri::urlDecode(QueryString& queryString)
+std::string Uri::urlDecode (QueryString const &queryString)
 {
-    std::string ret;
+  std::string ret;
 
-    for (size_t i=0; i<queryString.length(); ++i)
+  for (size_t i = 0; i < queryString.length (); ++i)
     {
-        if (unsigned(queryString[i])==37)
+      if (unsigned (queryString [i]) == 37)
         {
-	    unsigned ii;
-            sscanf(queryString.substr(i+1,2).c_str(), "%x", &ii);
-            char ch=static_cast<char>(ii);
-            ret+=ch;
-            i=i+2;
-        } else
+          unsigned ii;
+          sscanf (queryString.substr (i+1, 2).c_str (), "%x", &ii);
+          ret += static_cast<char> (ii);
+          i += 2;
+        }
+
+      else
         {
-            ret+=queryString[i];
+          ret += queryString [i];
         }
     }
-    queryString=ret;
+
+  return ret;
 }
 
 
 
-void Uri::split(std::vector<std::string>& splitStr, std::string const &str, char delimiter)
+void Uri::split (std::vector<std::string> &splitStr,
+                 std::string const        &str,
+                 char        const        &delimiter)
 {
-    std::stringstream ss(str);
-    std::string item;
-    while (getline(ss, item, delimiter))
-    {
-        splitStr.push_back(item);
-    }
+  std::stringstream ss (str);
+  std::string item;
+
+  while (getline (ss, item, delimiter))
+    splitStr.push_back (item);
 }
