@@ -49,7 +49,7 @@ DataFile::DataFile(const FileName &fileName)
   
   if (status != NC_NOERR)
   {
-    throw NetCdfException (nc_strerror(status));
+    throw NetCdfException ("error opening " + fileName + ":\n" + nc_strerror(status));
   }
 
   #ifdef DEBUG
@@ -76,6 +76,7 @@ WrfGrid::Parameters DataFile::getGridParameters()
     if (status != NC_NOERR)
     {
       throw NetCdfException (nc_strerror(status));
+      // FIXME throw NetCdfException ("error reading " + iterInt->first + " from #" + handle_ + ":\n" + nc_strerror(status));
     }
   }
   
@@ -98,6 +99,7 @@ WrfGrid::Parameters DataFile::getGridParameters()
     if (status != NC_NOERR)
     {
       throw NetCdfException (nc_strerror(status));
+      // FIXME throw NetCdfException ("error reading " + iterInt->first + " from #"+ handle_ +":\n" + nc_strerror(status));
     }
   }
   
@@ -117,6 +119,7 @@ DataFile::~DataFile()
   if (status != NC_NOERR)
   {
     throw NetCdfException (nc_strerror(status));
+    // FIXME : throw NetCdfException ("error closing #" + handle_ + ":\n" + nc_strerror(status));
   }
   
 }
