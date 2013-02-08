@@ -35,7 +35,6 @@
 
 class Uri
 {
-  
   typedef std::string QueryString;
   typedef std::string Value;
   typedef std::string Key;
@@ -45,19 +44,20 @@ class Uri
   
 public:
 
-  QueryString getString() { return uriString_; }
+  QueryString getString () const { return uriString_; }
 
-  void parse(Uri::QueryString string);
+  void parse (QueryString const &string);
 
-  void urlDecode(Uri::QueryString& queryString);
+  std::string urlDecode (QueryString const &queryString);
 
-  void split (std::vector< std::string >& splitStr,
-              const std::string& str,
-              char delimiter);
+  void split (std::vector<std::string> &splitStr,
+              std::string const &str,
+              char const &delimiter);
 
-  Value getVar(Key);
+  Value getVar (Key const &) const;
 
-  bool isVar(Key);
+  bool isVar (Key const &key) const { return vars_.count (key); }
+
 
 protected:
 
