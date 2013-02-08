@@ -1,9 +1,9 @@
 LDFLAGS = ../netcdf/lib/libnetcdf.a -ljsoncpp
-CXXFLAGS = -g -DDEBUG -I../netcdf/include
+CXXFLAGS = -g -Wall -DDEBUG -I../netcdf/include
 
 all : test
 
-CLASSES = uri config dataset datafile
+CLASSES = uri config dataset datafile wrfgrid
 
 test : $(CLASSES:=.o) main.o $(CLASSES:=.h)
 	$(CXX) $(CLASSES:=.o) main.o -o $@ $(LDFLAGS)

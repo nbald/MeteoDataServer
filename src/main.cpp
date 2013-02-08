@@ -4,12 +4,14 @@
  *
  * Author: Nicolas BALDECK <nicolas.baldeck@openmeteodata.org>
  * 
- * This program is free software: you can redistribute it and/or modify
+ * This file is a part of MeteoDataServer
+ * 
+ * MeteoDataServer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * MeteoDataServer is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -21,10 +23,9 @@
 #include <iostream>
 #include <unistd.h>
 
-#include <netcdf.h>
-
 #include "config.h"
 #include "uri.h"
+#include "datafile.h"
 
 int main (void)
 {
@@ -49,6 +50,17 @@ int main (void)
     std::cout << "truc : " << uri.getVar("truc") << '\n';
     std::cout << "bidule : " << uri.getVar("bidule") << '\n';
     
+    DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
+    
+    WrfGrid::Parameters parameters;
+    parameters = dataFile.getGridParameters();
+    
+    std::cout << "dx : " << parameters.dX << std::endl;
+    std::cout << "centLat : " << parameters.cenLat << std::endl;
+    
+    WrfGrid wrfGrid;
+    wrfGrid.setParameters(parameters);
+    std::cout << "proj4 : " << wrfGrid.getProjString() << std::endl;
     
   } 
   catch (std::string const &e)

@@ -4,12 +4,14 @@
  *
  * Author: Nicolas BALDECK <nicolas.baldeck@openmeteodata.org>
  * 
- * This program is free software: you can redistribute it and/or modify
+ * This file is a part of MeteoDataServer
+ * 
+ * MeteoDataServer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * MeteoDataServer is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -22,16 +24,31 @@
 #define MDS_DATAFILE
 
 #include <string>
+#include <vector>
+#include <map>
+
+#ifdef DEBUG
+#include <iostream>
+#endif
+
+#include <netcdf.h>
+
+#include "wrfgrid.h"
 
 class DataFile
 {
 
   typedef int Handle;
   typedef std::string FileName;
+  typedef std::string Time;
+  typedef std::vector<Time> TimesList;
   
+  typedef std::string NetCdfException;
+
 public:
   DataFile(const FileName &);
   ~DataFile();
+  WrfGrid::Parameters getGridParameters();
 protected:
 private:
   Handle handle_;
