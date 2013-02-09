@@ -23,9 +23,10 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "config.h"
-#include "uri.h"
-#include "datafile.h"
+#include <MeteoDataServer/config.h>
+#include <MeteoDataServer/uri.h>
+#include <MeteoDataServer/datafile.h>
+#include <MeteoDataServer/wrfgrid.h>
 
 int main (void)
 {
@@ -51,7 +52,8 @@ int main (void)
     std::cout << "truc : " << uri.getVar("truc") << '\n';
     std::cout << "bidule : " << uri.getVar("bidule") << '\n';
     
-    MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
+    //MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
+    MeteoDataServer::DataFile dataFile ("/home/nicolas/Téléchargements/1.nc");
     
     MeteoDataServer::WrfGrid::Parameters parameters;
     parameters = dataFile.getGridParameters();
@@ -59,14 +61,52 @@ int main (void)
     std::cout << "dx : " << parameters.dX << std::endl;
     std::cout << "centLat : " << parameters.cenLat << std::endl;
     
-
     MeteoDataServer::WrfGrid wrfGrid;
+    
     wrfGrid.initGrid(parameters);
+
+    
+    /*
+    MeteoDataServer::WrfGrid::GridPoint gridPoint;
+    
+    
+    double lat;
+    double lon;
+    
+    std::cout << "lat?" << std::endl;
+    std::cin >> lat;
+    std::cout << "lon?" << std::endl;
+    std::cin >> lon;
+    gridPoint = wrfGrid.latLonToGridXY(lat, lon);
+    std::cout << "X : " << gridPoint.x << std::endl;
+    std::cout << "Y : " << gridPoint.y << std::endl;
+    std::cout << "errX : " << gridPoint.xError << std::endl;
+    std::cout << "errY : " << gridPoint.yError << std::endl;
+    
+    */
+    
+    
+    int x;
+    int y;
+    std::cout << "x?" << std::endl;
+    std::cin >> x;
+    std::cout << "y?" << std::endl;
+    std::cin >> y;
+    wrfGrid.showXYLatLon(x, y);
+    
     //std::cout << "proj4 : " << wrfGrid.getProjString() << std::endl;
 
     
   } 
   catch (std::string const &e)
+  {
+    std::cerr << e << '\n';
+  }
+  catch (int const &e)
+  {
+    std::cerr << e << '\n';
+  }
+  catch (double &e)
   {
     std::cerr << e << '\n';
   }

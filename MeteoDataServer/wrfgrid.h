@@ -25,26 +25,28 @@
 
 #include <string>
 #include <sstream>
+#include <cmath>
+#include <iostream>
 
 #include <proj_api.h>
 
 
-#define WRF_EARTH_RADIUS 6370000 // do not change
-#define PROJ_NOT_INITIALIZED 0
-
 namespace MeteoDataServer {
 
+  
+  
   class WrfGrid {
 
     public:
       typedef std::string ProjString;
       typedef int PointsCount;
-      typedef float Meters;
+      typedef float MetersFloat;
+      typedef double Meters;
       typedef float Latitude;
       typedef float Longitude;
       typedef std::string GridType;
-      typedef unsigned int GridX;
-      typedef unsigned int GridY;
+      typedef int GridX;
+      typedef int GridY;
       
       typedef std::string ProjException;
       
@@ -52,15 +54,16 @@ namespace MeteoDataServer {
 	PROJ_LAMBERT_CONFORMAL = 1,
 	PROJ_POLAR_STEREOGRAPHIC = 2,
 	PROJ_MERCATOR = 3,
-	PROJ_ROTATED_LATLON = 6
+	PROJ_ROTATED_LATLON = 6,
+	PROJ_NMM_ARAKAWA_E = 203
       };
       
       struct Parameters {
 	PointsCount nWestEast;
 	PointsCount nSouthNorth;
 	PointsCount nBottomTop;
-	Meters dX;
-	Meters dY;
+	MetersFloat dX;
+	MetersFloat dY;
 	GridType gridType;
 	Latitude cenLat;
 	Longitude cenLon;
@@ -73,33 +76,46 @@ namespace MeteoDataServer {
 	int mapProj; // can't convert int to enum
       };
       
-      struct Projection {
-	ProjString string;
-	Meters top;
-	Meters left;
+      struct Grid {
+	ProjString projString;
+	Meters x0;
+	Meters y0;
+	PointsCount nWestEast;
+	PointsCount nSouthNorth;
+	Meters dX;
+	Meters dY;
 	projPJ proj;
-	bool initialised;
       };
 
-      struct WgsCoordinates {
+      struct LatLon {
 	Latitude lat;
 	Longitude lon;
       };
       
-      struct GridCoordinates {
+      struct GridPoint {
 	GridX x;
 	GridY y;
+	Meters xError;
+	Meters yError;
+      };
+      
+      struct ProjPoint {
+	Meters x;
+	Meters y;
       };
       
       WrfGrid();
       ~WrfGrid();
       void initGrid(Parameters const &);
-      GridCoordinates wgsToGridCoordinates(WgsCoordinates const &);
-      GridCoordinates wgsToGridCoordinates(Latitude const &, Longitude const &);
+      GridPoint latLonToGridXY(LatLon const &);
+      GridPoint latLonToGridXY(Latitude const &, Longitude const &);
+      void showXYLatLon(GridX gridX, GridY gridY);
     protected:
     private:
       ProjString makeProjString_(Parameters const &);
-      Projection projection_;
+      Grid grid_;
+      projPJ latlonProj_;
+      ProjPoint latLonToProjXY_(Latitude const &, Longitude const &);
   };  /* End of class WrfGrid. */
 
 
