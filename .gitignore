@@ -5,4 +5,5 @@ netcdf/*
 build/*
 MeteoDataServer/test
 MeteoDataServer/a.out
-*kdev4*
+*kdev*
+*kate-swp*

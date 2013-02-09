@@ -103,9 +103,13 @@ namespace MeteoDataServer {
     floatParameters["POLE_LON"] = &parameters.poleLon;
 
     std::map<const char *, float*>::iterator iterFloat;
-    for (iterFloat = floatParameters.begin(); iterFloat != floatParameters.end(); ++iterFloat)
+    for (iterFloat = floatParameters.begin();
+	 iterFloat != floatParameters.end();
+	 ++iterFloat)
     {
-      int status = nc_get_att_float (handle_, NC_GLOBAL, iterFloat->first, iterFloat->second);
+      int status = nc_get_att_float
+		      (handle_, NC_GLOBAL, iterFloat->first, iterFloat->second);
+		      
       if (status != NC_NOERR)
       {
         throw NetCdfException (nc_strerror(status));
