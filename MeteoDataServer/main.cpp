@@ -52,21 +52,23 @@ int main (void)
     std::cout << "truc : " << uri.getVar("truc") << '\n';
     std::cout << "bidule : " << uri.getVar("bidule") << '\n';
     
-    //MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
-    MeteoDataServer::DataFile dataFile ("/home/nicolas/Téléchargements/1.nc");
+    MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
+    //MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/sampledata/wrf grids/lambert.nc");
     
     MeteoDataServer::WrfGrid::Parameters parameters;
     parameters = dataFile.getGridParameters();
     
     std::cout << "dx : " << parameters.dX << std::endl;
     std::cout << "centLat : " << parameters.cenLat << std::endl;
+    std::cout << "standLon : " << parameters.standLon << std::endl;
+    std::cout << "cenLon : " << parameters.cenLon << std::endl;
     
     MeteoDataServer::WrfGrid wrfGrid;
     
     wrfGrid.initGrid(parameters);
 
     
-    /*
+    
     MeteoDataServer::WrfGrid::GridPoint gridPoint;
     
     
@@ -83,9 +85,9 @@ int main (void)
     std::cout << "errX : " << gridPoint.xError << std::endl;
     std::cout << "errY : " << gridPoint.yError << std::endl;
     
-    */
     
     
+    /*
     int x;
     int y;
     std::cout << "x?" << std::endl;
@@ -93,7 +95,7 @@ int main (void)
     std::cout << "y?" << std::endl;
     std::cin >> y;
     wrfGrid.showXYLatLon(x, y);
-    
+    */
     //std::cout << "proj4 : " << wrfGrid.getProjString() << std::endl;
 
     

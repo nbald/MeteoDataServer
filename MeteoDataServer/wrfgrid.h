@@ -26,7 +26,10 @@
 #include <string>
 #include <sstream>
 #include <cmath>
+
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 #include <proj_api.h>
 
@@ -109,7 +112,9 @@ namespace MeteoDataServer {
       void initGrid(Parameters const &);
       GridPoint latLonToGridXY(LatLon const &);
       GridPoint latLonToGridXY(Latitude const &, Longitude const &);
-      void showXYLatLon(GridX gridX, GridY gridY);
+      #ifdef DEBUG
+	void showXYLatLon(GridX gridX, GridY gridY);
+      #endif
     protected:
     private:
       ProjString makeProjString_(Parameters const &);

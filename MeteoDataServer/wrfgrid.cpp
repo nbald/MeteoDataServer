@@ -70,8 +70,10 @@ namespace MeteoDataServer {
     ProjPoint centerMeters = latLonToProjXY_(parameters.cenLat, parameters.cenLon);
     grid_.dX = parameters.dX;
     grid_.dY = parameters.dX;
-    grid_.x0 = centerMeters.x - ((parameters.nWestEast/2.)-1) * grid_.dX;
-    grid_.y0 = centerMeters.y - ((parameters.nSouthNorth/2.)-1) * grid_.dY;
+    grid_.nSouthNorth = parameters.nSouthNorth;
+    grid_.nWestEast = parameters.nWestEast;
+    grid_.x0 = centerMeters.x - ((grid_.nWestEast/2.)-1) * grid_.dX;
+    grid_.y0 = centerMeters.y - ((grid_.nSouthNorth/2.)-1) * grid_.dY;
   }
 
 
@@ -98,8 +100,7 @@ namespace MeteoDataServer {
     
     switch (parameters.mapProj) {
       
-      case PROJ_LAMBERT_CONFORMAL: // TODO: needs testing
-	throw ProjException("lambert conformal projection needs testing");
+      case PROJ_LAMBERT_CONFORMAL: // tested, seems to be working
 	projStream << "+proj=lcc"
 		  << " +lon_0=" << parameters.standLon
 		  << " +lat_0=" << parameters.moadCenLat
@@ -157,25 +158,6 @@ namespace MeteoDataServer {
   {
     return latLonToGridXY(latLon.lat, latLon.lon);
   }
-
-  void WrfGrid::showXYLatLon(GridX gridX, GridY gridY)
-  {
-    ProjPoint proj;
-    proj.x = grid_.x0 + gridX*grid_.dX;
-    proj.y = grid_.y0 + gridY*grid_.dY;
-    int status = pj_transform(grid_.proj, latlonProj_, 1, 1, &proj.x, &proj.y, NULL);
-    if (status != 0)
-    {
-      throw ProjException ("transform failed");
-    }
-    
-    proj.x *= 57.2957795;
-    proj.y *= 57.2957795;
-    
-    std::cout << "x: " << proj.x << std::endl;
-    std::cout << "y: " << proj.y << std::endl;
-    
-  }
   
   WrfGrid::GridPoint WrfGrid::latLonToGridXY(Latitude const &lat, Longitude const &lon)
   {
@@ -188,7 +170,7 @@ namespace MeteoDataServer {
     gridPoint.x = static_cast<int>(x / grid_.dX + 0.5);
     gridPoint.y = static_cast<int>(y / grid_.dY + 0.5);
     
-    /*if (gridPoint.x < 0) {
+    if (gridPoint.x < 0) {
       gridPoint.x=0;
     } else if (gridPoint.x >= grid_.nWestEast) {
       gridPoint.x=grid_.nWestEast;
@@ -198,18 +180,16 @@ namespace MeteoDataServer {
       gridPoint.y=0;
     } else if (gridPoint.y >= grid_.nSouthNorth) {
       gridPoint.y=grid_.nSouthNorth;
-    }*/
+    }
     
-    
-    // TODO: should it be positive or negative ?
     gridPoint.xError = x-gridPoint.x*grid_.dX; 
     gridPoint.yError = y-gridPoint.y*grid_.dY;
     
-    /*if (fabs(gridPoint.xError) > grid_.dX) 
+    if (fabs(gridPoint.xError) > grid_.dX) 
     {
       std::ostringstream errorStream;
       errorStream << "longitude you asked is too far from nearest grid point ("
-		  << gridPoint.xError << "m)";
+		  << gridPoint.xError/1000 << " km)";
       throw ProjException (errorStream.str());
     }
     
@@ -217,11 +197,35 @@ namespace MeteoDataServer {
     {
       std::ostringstream errorStream;
       errorStream << "latitude you asked is too far from nearest grid point ("
-		  << gridPoint.xError << "m)";
+		  << gridPoint.yError/1000 << " km)";
       throw ProjException (errorStream.str());
-    }*/
+    }
     
     return gridPoint;
   }
+  
+  
+  
+  #ifdef DEBUG
+    void WrfGrid::showXYLatLon(GridX gridX, GridY gridY)
+    {
+      ProjPoint proj;
+      proj.x = grid_.x0 + gridX*grid_.dX;
+      proj.y = grid_.y0 + gridY*grid_.dY;
+      int status = pj_transform(grid_.proj, latlonProj_, 1, 1, &proj.x, &proj.y, NULL);
+      if (status != 0)
+      {
+	throw ProjException ("transform failed");
+      }
+      
+      proj.x *= 57.2957795;
+      proj.y *= 57.2957795;
+      
+      std::cout << "lat: " << proj.x << std::endl;
+      std::cout << "lon: " << proj.y << std::endl;
+      
+    }
+  #endif
+  
 
 }  /* End of namespace MeteoDataServer. */
