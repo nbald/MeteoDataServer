@@ -54,8 +54,21 @@ namespace MeteoDataServer {
 
     if (status != NC_NOERR)
     {
-      throw NetCdfException ("error opening " + fileName + ":\n"
-                                                        + nc_strerror(status));
+      if (status == NC_DISKLESS && sizeof(void*) < 8) // if using unpatched library
+      {
+	/* sizeof(void*) : are we on a 32bit computer ?
+	 size of a pointer : 4bytes->32bits 8bytes->64bits */
+	
+	throw NetCdfException
+		("error opening " + fileName + ":\n" + 
+		"trying to map a 64bit offset file on a 32bit system\n" +
+		"You can try with patched NetCDF library from install_dependencies.sh"
+		);
+
+      } else {
+	throw NetCdfException
+		("error opening " + fileName + ":\n"+ nc_strerror(status));
+      }
     }
 
     #ifdef DEBUG

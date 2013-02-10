@@ -52,8 +52,13 @@ int main (void)
     std::cout << "truc : " << uri.getVar("truc") << '\n';
     std::cout << "bidule : " << uri.getVar("bidule") << '\n';
     
-    MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/data/france/2013-01-22_18/wrfout/wrfout.nc");
-    //MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/sampledata/wrf grids/lambert.nc");
+    //MeteoDataServer::DataFile dataFileA("/home/nicolas/MeteoDataServer/data/2012-12-17_00/rasp/0.nc");
+    //MeteoDataServer::DataFile dataFileB ("/home/nicolas/MeteoDataServer/data/2013-01-19_00/wrfout/0.nc");
+    //MeteoDataServer::DataFile dataFileC ("/home/nicolas/MeteoDataServer/data/2012-12-11_00/france/wrfout/0.nc");
+    //MeteoDataServer::DataFile dataFileD ("/home/nicolas/Téléchargements/test.nc");
+    MeteoDataServer::DataFile dataFile ("/home/nicolas/MeteoDataServer/sampledata/wrfgrids/lambert-netcdf64.nc");
+
+
     
     MeteoDataServer::WrfGrid::Parameters parameters;
     parameters = dataFile.getGridParameters();
