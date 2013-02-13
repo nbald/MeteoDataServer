@@ -35,45 +35,7 @@ namespace MeteoDataServer {
       std::cout << "open NetCDF file : " << fileName << std::endl;
     #endif
 
-    int status = nc_open(fileName.c_str(),
-                         NC_SHARE|NC_DISKLESS|NC_MMAP,
-                         &handle_);
-   /* 
-    * NC_SHARE : from doc : Since the buffering scheme is optimized 
-    * for sequential access, programs that do not access data sequentially
-    * may see some performance improvement by setting the NC_SHARE flag.
-    * 
-    * NC_DISKLESS : for allowing NC_MMAP. Side effect : any changes
-    * performed to the files won't be saved on exit. Not an issue for us. 
-    * 
-    * NC_MMAP : for mapping the file to virtual memory, and let the linux
-    * kernel do the RAM cache management for us. See `man mmap`.
-    * To use this flag, NetCDF must be compiled with ./configure --enable-mmap
-    * Ubuntu's libnetcdf doesn't include mmap support.
-    */
-
-    if (status != NC_NOERR)
-    {
-      if (status == NC_DISKLESS && sizeof(void*) < 8) // if using unpatched library
-      {
-	/* sizeof(void*) : are we on a 32bit computer ?
-	 size of a pointer : 4bytes->32bits 8bytes->64bits */
-	
-	throw NetCdfException
-		("error opening " + fileName + ":\n" + 
-		"trying to map a 64bit offset file on a 32bit system\n" +
-		"You can try with patched NetCDF library from install_dependencies.sh"
-		);
-
-      } else {
-	throw NetCdfException
-		("error opening " + fileName + ":\n"+ nc_strerror(status));
-      }
-    }
-
-    #ifdef DEBUG
-      std::cout << "handle : #" << handle_ << std::endl;
-    #endif
+    nc_.openFile(fileName);
 
   }
 
@@ -93,14 +55,12 @@ namespace MeteoDataServer {
          iterInt != intParameters.end();
          ++iterInt)
     {
-      int status = nc_get_att_int
-                          (handle_, NC_GLOBAL, iterInt->first, iterInt->second);
-
-      if (status != NC_NOERR)
+      NcMmap::Attribute* attribute = nc_.getGlobalAttribute(iterInt->first);
+      if (attribute->integerValue.size() < 1)
       {
-        throw NetCdfException (nc_strerror(status));
-        // FIXME throw NetCdfException ("error reading " + iterInt->first + " from #" + handle_ + ":\n" + nc_strerror(status));
+	throw std::string ("missing attribute");
       }
+      *iterInt->second = static_cast<int>(attribute->integerValue[0]);
     }
 
     std::map<const char *, float*> floatParameters;
@@ -120,14 +80,12 @@ namespace MeteoDataServer {
 	 iterFloat != floatParameters.end();
 	 ++iterFloat)
     {
-      int status = nc_get_att_float
-		      (handle_, NC_GLOBAL, iterFloat->first, iterFloat->second);
-		      
-      if (status != NC_NOERR)
+      NcMmap::Attribute* attribute = nc_.getGlobalAttribute(iterFloat->first);
+      if (attribute->floatValue.size() < 1)
       {
-        throw NetCdfException (nc_strerror(status));
-        // FIXME throw NetCdfException ("error reading " + iterInt->first + " from #"+ handle_ +":\n" + nc_strerror(status));
+	throw std::string ("missing attribute");
       }
+      *iterFloat->second = static_cast<float>(attribute->floatValue[0]);
     }
 
     return parameters;
@@ -138,16 +96,8 @@ namespace MeteoDataServer {
   {
 
     #ifdef DEBUG
-      std::cout << "close NetCDF file #" << handle_ << std::endl;
+      std::cout << "close file " << std::endl;
     #endif
-
-    int status = nc_close(handle_);
-
-    if (status != NC_NOERR)
-    {
-      throw NetCdfException (nc_strerror(status));
-      // FIXME : throw NetCdfException ("error closing #" + handle_ + ":\n" + nc_strerror(status));
-    }
 
   }
 

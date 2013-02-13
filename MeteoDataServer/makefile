@@ -1,5 +1,5 @@
-LDFLAGS = ../netcdf/lib/libnetcdf.a -ljsoncpp -lproj
-CXXFLAGS = -g -Wall -DDEBUG -I.. -I../netcdf/include
+LDFLAGS = -ljsoncpp -lproj -lncmmap
+CXXFLAGS = -g -Wall -DDEBUG -I..
 
 all : test
 

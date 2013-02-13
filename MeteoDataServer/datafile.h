@@ -31,10 +31,9 @@
 #include <iostream>
 #endif
 
-#include <netcdf.h>
+#include <NcMmap.h>
 
 #include <MeteoDataServer/wrfgrid.h>
-
 
 namespace MeteoDataServer {
 
@@ -55,7 +54,7 @@ namespace MeteoDataServer {
     WrfGrid::Parameters getGridParameters();
   protected:
   private:
-    Handle handle_;
+    NcMmap nc_;
 
 
   };  /* End of class DataFile. */
